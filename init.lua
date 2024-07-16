@@ -6,12 +6,25 @@ local vim = vim
 
 vim.call('plug#begin')
 
+-- Dependancy
 Plug('nvim-lua/plenary.nvim')
+
+-- Telescope
 Plug('nvim-telescope/telescope.nvim', {['tag'] = '0.1.7' })
+
+-- Theme
 Plug('ellisonleao/gruvbox.nvim')
+
+-- Treesitter
 Plug('nvim-treesitter/nvim-treesitter', {['do'] = vim.fn[':TSUpdate']})
+
+-- Undotree
 Plug('jiaoshijie/undotree')
+
+-- Git
 Plug('tpope/vim-fugitive')
+
+-- LSP Stuff
 Plug('williamboman/mason.nvim')
 Plug('williamboman/mason-lspconfig.nvim')
 Plug('neovim/nvim-lspconfig')
@@ -19,6 +32,12 @@ Plug('hrsh7th/nvim-cmp')
 Plug('hrsh7th/cmp-nvim-lsp')
 Plug('L3MON4D3/LuaSnip')
 Plug('VonHeikemen/lsp-zero.nvim', {['branch'] = 'v3.x' })
+
+-- Lualine
+Plug('nvim-lualine/lualine.nvim')
+
+-- Gitsigns
+Plug('lewis6991/gitsigns.nvim')
 
 vim.call('plug#end')
 
@@ -77,7 +96,7 @@ require'nvim-treesitter.configs'.setup {
 									-- Telescope
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+vim.keymap.set('n', '<C-f>', builtin.find_files, {})
 vim.keymap.set('n', '<C-g>', builtin.git_files, {})
 vim.keymap.set('n', '<leader>fs', function ()
 	builtin.grep_string({ search = vim.fn.input("Grep > ") })
@@ -122,7 +141,7 @@ vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
 vim.keymap.set("x", "<leader>p", "\"_dP")
 
-vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww ~/.tmux/scripts/tmux-sessionizer<CR>")
+-- vim.keymap.set("n", "<C-f>", "<cmd>silent !tmux neww ~/.tmux/scripts/tmux-sessionizer<CR>")
 
 ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 									-- Set
@@ -138,3 +157,100 @@ vim.opt.incsearch = true
 vim.opt.termguicolors = true
 
 vim.opt.updatetime = 50
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+									-- Lualine
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+require('lualine').setup {
+  options = {
+    icons_enabled = true,
+    theme = 'gruvbox',
+    component_separators = { left = '', right = ''},
+    section_separators = { left = '', right = ''},
+    disabled_filetypes = {
+      statusline = {},
+      winbar = {},
+    },
+    ignore_focus = {},
+    always_divide_middle = true,
+    globalstatus = false,
+    refresh = {
+      statusline = 1000,
+      tabline = 1000,
+      winbar = 1000,
+    }
+  },
+  sections = {
+    lualine_a = {'mode'},
+    lualine_b = {'branch', 'diff', 'diagnostics'},
+    lualine_c = {'filename'},
+    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_y = {'progress'},
+    lualine_z = {'location'}
+  },
+  inactive_sections = {
+    lualine_a = {},
+    lualine_b = {},
+    lualine_c = {'filename'},
+    lualine_x = {'location'},
+    lualine_y = {},
+    lualine_z = {}
+  },
+  tabline = {},
+  winbar = {},
+  inactive_winbar = {},
+  extensions = {}
+}
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+									-- Gitsigns
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------
+require('gitsigns').setup {
+  signs = {
+    add          = { text = '┃' },
+    change       = { text = '┃' },
+    delete       = { text = '_' },
+    topdelete    = { text = '‾' },
+    changedelete = { text = '~' },
+    untracked    = { text = '┆' },
+  },
+  signs_staged = {
+    add          = { text = '┃' },
+    change       = { text = '┃' },
+    delete       = { text = '_' },
+    topdelete    = { text = '‾' },
+    changedelete = { text = '~' },
+    untracked    = { text = '┆' },
+  },
+  signs_staged_enable = true,
+  signcolumn = true,  -- Toggle with `:Gitsigns toggle_signs`
+  numhl      = false, -- Toggle with `:Gitsigns toggle_numhl`
+  linehl     = false, -- Toggle with `:Gitsigns toggle_linehl`
+  word_diff  = false, -- Toggle with `:Gitsigns toggle_word_diff`
+  watch_gitdir = {
+    follow_files = true
+  },
+  auto_attach = true,
+  attach_to_untracked = false,
+  current_line_blame = false, -- Toggle with `:Gitsigns toggle_current_line_blame`
+  current_line_blame_opts = {
+    virt_text = true,
+    virt_text_pos = 'eol', -- 'eol' | 'overlay' | 'right_align'
+    delay = 1000,
+    ignore_whitespace = false,
+    virt_text_priority = 100,
+  },
+  current_line_blame_formatter = '<author>, <author_time:%R> - <summary>',
+  sign_priority = 6,
+  update_debounce = 100,
+  status_formatter = nil, -- Use default
+  max_file_length = 40000, -- Disable if file is longer than this (in lines)
+  preview_config = {
+    -- Options passed to nvim_open_win
+    border = 'single',
+    style = 'minimal',
+    relative = 'cursor',
+    row = 0,
+    col = 1
+  },
+}
