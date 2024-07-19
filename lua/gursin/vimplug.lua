@@ -41,7 +41,4 @@ Plug('nvim-lualine/lualine.nvim')
 -- Gitsigns
 Plug('lewis6991/gitsigns.nvim')
 
--- Leetcode
-Plug('ianding1/leetcode.vim')
-
 vim.call('plug#end')
